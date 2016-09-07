@@ -23,24 +23,6 @@ resource "azurerm_virtual_network" "productionNetwork" {
   address_space       = ["11.0.0.0/16"]
   location            = "West US"
   resource_group_name = "${azurerm_resource_group.production.name}"
-  #depends_on = ["azurerm_virtual_machine.webprod01"]
-/*  provisioner "chef" {
-                server_url = "https://manage.chef.io/organizations/waseema"
-                validation_client_name = "waseema-validator"
-                validation_key = "/home/jenkins/Terraform_config_files/chef/chef-repo/.chef/waseema-validator.pem"
-                node_name = "Webserver"
-                run_list = ["role[windowsrole]"]
-                environment = "production"
-                ssl_verify_mode = ":verify_none"
-                connection {
-                        type = "winrm"
-                        user = "zenadmin"
-                        password = "Redhat#10"      
-                        host = "${azurerm_public_ip.prodweb01pub.ip_address}"
-			timeout = "20m"
-		}
-  }
-*/
 }
 
 resource "azurerm_subnet" "public" {
