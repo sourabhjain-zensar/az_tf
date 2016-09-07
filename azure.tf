@@ -369,3 +369,11 @@ resource "azurerm_network_security_rule" "R1443" {
     resource_group_name = "${azurerm_resource_group.production.name}"
     network_security_group_name = "${azurerm_network_security_group.proddbNSG.name}"
 }
+
+output "Application URLs: " {
+        value = "${azurerm_public_ip.prodweb01pub.ip_address}"
+}
+
+output "DNS entry" {
+        value = "web_pub.azr.zencloud.com"
+}
