@@ -150,7 +150,7 @@ resource "azurerm_virtual_machine" "webprod01" {
 
     storage_os_disk {
         name = "myosdisk1"
-        vhd_uri = "${azurerm_storage_account.swebacnt.primary_blob_endpoint}${azurerm_sto                                     rage_container.swebcont.name}/myosdisk1.vhd"
+        vhd_uri = "${azurerm_storage_account.swebacnt.primary_blob_endpoint}${azurerm_storage_container.swebcont.name}/myosdisk1.vhd"
         caching = "ReadWrite"
         create_option = "FromImage"
     }
@@ -212,7 +212,7 @@ resource "azurerm_virtual_machine" "dbprod01" {
 
     storage_os_disk {
         name = "myosdisk1"
-        vhd_uri = "${azurerm_storage_account.sdbacnt.primary_blob_endpoint}${azurerm_stor                                     age_container.sdbcont.name}/myosdisk1.vhd"
+        vhd_uri = "${azurerm_storage_account.sdbacnt.primary_blob_endpoint}${azurerm_storage_container.sdbcont.name}/myosdisk1.vhd"
         caching = "ReadWrite"
         create_option = "FromImage"
     }
