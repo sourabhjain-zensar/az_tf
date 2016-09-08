@@ -76,6 +76,7 @@ resource "azurerm_public_ip" "prodweb01pub" {
     location = "West US"
     resource_group_name = "${azurerm_resource_group.production.name}"
     public_ip_address_allocation = "static"
+    domain_name_label = "webpub"
 }
 
 resource "azurerm_network_interface" "prodwebpudinter" {
@@ -88,8 +89,8 @@ resource "azurerm_network_interface" "prodwebpudinter" {
         name = "prodconfiguration1"
         subnet_id = "${azurerm_subnet.public.id}"
         private_ip_address_allocation = "dynamic"
-	public_ip_address_id = "${azurerm_public_ip.prodweb01pub.id}"
-	#load_balancer_backend_address_pools_ids = ["${azurerm_simple_lb.prodwebpudinter.backend_pool_id}"]
+        public_ip_address_id = "${azurerm_public_ip.prodweb01pub.id}"
+        #load_balancer_backend_address_pools_ids = ["${azurerm_simple_lb.prodwebpudinter.                                     backend_pool_id}"]
     }
 }
 
@@ -146,10 +147,10 @@ resource "azurerm_virtual_machine" "webprod01" {
         sku = "2008-R2-SP1"
         version = "latest"
     }
-	
+
     storage_os_disk {
         name = "myosdisk1"
-        vhd_uri = "${azurerm_storage_account.swebacnt.primary_blob_endpoint}${azurerm_storage_container.swebcont.name}/myosdisk1.vhd"
+        vhd_uri = "${azurerm_storage_account.swebacnt.primary_blob_endpoint}${azurerm_sto                                     rage_container.swebcont.name}/myosdisk1.vhd"
         caching = "ReadWrite"
         create_option = "FromImage"
     }
@@ -163,7 +164,7 @@ resource "azurerm_virtual_machine" "webprod01" {
     os_profile_windows_config {
         enable_automatic_upgrades = false
     }
-	
+
     tags {
         environment = "staging"
     }
@@ -174,7 +175,7 @@ resource "azurerm_storage_account" "sdbacnt" {
     resource_group_name = "${azurerm_resource_group.production.name}"
     location = "westus"
     account_type = "Standard_LRS"
-	tags {
+        tags {
         environment = "staging"
     }
 }
@@ -208,24 +209,24 @@ resource "azurerm_virtual_machine" "dbprod01" {
         sku = "14.04.2-LTS"
         version = "latest"
     }
-	
+
     storage_os_disk {
         name = "myosdisk1"
-        vhd_uri = "${azurerm_storage_account.sdbacnt.primary_blob_endpoint}${azurerm_storage_container.sdbcont.name}/myosdisk1.vhd"
+        vhd_uri = "${azurerm_storage_account.sdbacnt.primary_blob_endpoint}${azurerm_stor                                     age_container.sdbcont.name}/myosdisk1.vhd"
         caching = "ReadWrite"
         create_option = "FromImage"
     }
 
     os_profile {
-        computer_name = "webprod01"
+        computer_name = "dbprod01"
         admin_username = "zenadmin"
         admin_password = "Redhat#12345"
     }
 
-    os_profile_windows_config {
-        enable_automatic_upgrades = false
+    os_profile_linux_config {
+        disable_password_authentication = false
     }
-	
+
     tags {
         environment = "staging"
     }
@@ -240,13 +241,13 @@ resource "azurerm_network_security_group" "prodwebNSG" {
 resource "azurerm_network_security_rule" "HTTP" {
     name = "HTTP"
     priority = 100
-	direction = "Inbound"
-	access = "Allow"
-	protocol = "TCP"
-	source_port_range = "*"
-	destination_port_range = "80"
-	source_address_prefix = "0.0.0.0"
-	destination_address_prefix = "*"
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "TCP"
+        source_port_range = "*"
+        destination_port_range = "80"
+        source_address_prefix = "0.0.0.0"
+        destination_address_prefix = "*"
     resource_group_name = "${azurerm_resource_group.production.name}"
     network_security_group_name = "${azurerm_network_security_group.prodwebNSG.name}"
 }
@@ -270,7 +271,7 @@ resource "azurerm_network_security_rule" "RDP-web" {
     priority = 300
         direction = "Inbound"
         access = "Allow"
-        protocol = "TCP"
+        protocol = "*"
         source_port_range = "*"
         destination_port_range = "3389"
         source_address_prefix = "0.0.0.0"
@@ -345,13 +346,13 @@ resource "azurerm_network_security_group" "proddbNSG" {
 resource "azurerm_network_security_rule" "RDP-App" {
     name = "RDP-App"
     priority = 100
-	direction = "Inbound"
-	access = "Allow"
-	protocol = "TCP"
-	source_port_range = "*"
-	destination_port_range = "3389"
-	source_address_prefix = "0.0.0.0"
-	destination_address_prefix = "*"
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "TCP"
+        source_port_range = "*"
+        destination_port_range = "3389"
+        source_address_prefix = "0.0.0.0"
+        destination_address_prefix = "*"
     resource_group_name = "${azurerm_resource_group.production.name}"
     network_security_group_name = "${azurerm_network_security_group.proddbNSG.name}"
 }
